@@ -12,7 +12,7 @@ from fractions import*
 
 s='''
 65 97 89.34`str1337`10e4`ski`V
-                "_::"$`A`:899<
+                 "_∴"$`A`:899<
 '''[1:-1]
 s="\n".join(y+' ' for y in s.split("\n"))
 frac=False
@@ -73,6 +73,8 @@ while token!=EOF:
     stack.append([stack.pop(-2),stack.pop(-1)])
   if not string and token=='_':
     del stack[-1]
+  if not string and token=='∴':
+    stack.extend([stack[-1]]*2)
   if direction=='right':X=X+1
   if direction=='left':X=X-1
   if direction=='down':Y=Y+1
