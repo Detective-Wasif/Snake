@@ -12,17 +12,16 @@ from fractions import*
 
 s='''
 65 97 89.34`str1337`10e4`ski`V
-                          899<
+                    "$`A`:899<
 '''[1:-1]
 s="\n".join(y+' ' for y in s.split("\n"))
-print(s)
 frac=False
 EOF='E'
 box=[[EOF]+[*l]+[EOF]for l in s.split("\n")]
 wall=[[EOF]*len(s.split("\n")[0])]
 box=wall+box+wall
 box=[[box[e][i]for e in range(len(box))]for i in range(len(box[0]))]
-for line in box:print(*line,sep=" ")
+#for line in box:print(*line,sep=" ")
 direction='right'
 string=False
 execute=True
@@ -40,7 +39,6 @@ def snipe(dir,x,y,b):
   if dir=='up':return b[x][y-1]
 
 while token!=EOF:
-  print(X,Y,direction)
   token=box[X][Y]
   if token=='`':
     string=not(string)
@@ -67,6 +65,12 @@ while token!=EOF:
     break
   if not string and token in '<>V^':
     direction=['left','right','down','up']['<>V^'.index(token)]
+  if not string and token==':':
+    stack.append(stack[-1])
+  if not string and token=='$':
+    stack[-2],stack[-1]=stack[-1],stack[-2]
+  if not string and token=='"':
+    stack.append([stack.pop(-2),stack.pop(-1)])
   if direction=='right':X=X+1
   if direction=='left':X=X-1
   if direction=='down':Y=Y+1
