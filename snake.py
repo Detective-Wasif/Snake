@@ -14,6 +14,7 @@ s='''
 65 97 89.34`str1337`10e4`ski`V
                  "_∴"$`A`:899<
 '''[1:-1]
+
 s="\n".join(y+' ' for y in s.split("\n"))
 frac=False
 EOF='E'
@@ -21,6 +22,7 @@ box=[[EOF]+[*l]+[EOF]for l in s.split("\n")]
 wall=[[EOF]*len(s.split("\n")[0])]
 box=wall+box+wall
 box=[[box[e][i]for e in range(len(box))]for i in range(len(box[0]))]
+box.append(box[0])
 for line in box:print(*line,sep=" ")
 direction='right'
 string=False
@@ -37,7 +39,6 @@ def snipe(dir,x,y,b):
   if dir=='left':return b[x-1][y]
   if dir=='down':return b[x][y+1]
   if dir=='up':return b[x][y-1]
-
 while token!=EOF:
   token=box[X][Y]
   if token=='`':
@@ -75,6 +76,31 @@ while token!=EOF:
     del stack[-1]
   if not string and token=='∴':
     stack.extend([stack[-1]]*2)
+  if not string and token=='R':
+    stack.append(stack[-1][::-1])
+  if not string and token=='A':
+    stack[-2].append(stack.pop(-1))
+  if not string and token=='^':
+    stack=stack[::-1]
+  if not string and token=='›':
+    stack[-1]+=1
+  if not string and token=='‹':
+    stack[-1]-=1
+  if not string and token=='+':
+    stack.append(stack.pop(-2)+stack.pop(-1))
+  if not string and token=='-':
+    if [type(stack[-1]),type(stack[-2])]==[str,str]:
+      stack.append(stack.pop(-2).replace(stack.pop(-1),''))
+    else:
+      stack.append(stack.pop(-2)-stack.pop(-1))
+  if not string and token=='':
+    stack.append(stack.pop(-2)*stack.pop(-1))
+  if not string and token=='×':
+    stack.append(stack.pop(-2)*stack.pop(-1))
+  if not string and token=='÷':
+    stack.append(stack.pop(-2)/stack.pop(-1))
+  if not string and token=='%':
+    stack.append(stack.pop(-2)%stack.pop(-1))
   if direction=='right':X=X+1
   if direction=='left':X=X-1
   if direction=='down':Y=Y+1
