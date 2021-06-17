@@ -1,4 +1,5 @@
 import os
+import sys
 import math
 import random
 import requests
@@ -30,7 +31,9 @@ execute=True
 List=False
 number=False
 cat=True
+register=0
 stack=[0]
+variables=dict()
 X=1
 Y=1
 token=box[X][Y]
@@ -101,8 +104,28 @@ while token!=EOF:
     stack.append(stack.pop(-2)/stack.pop(-1))
   if not string and token=='%':
     stack.append(stack.pop(-2)%stack.pop(-1))
-  if not string and token=='j':
+  if not string and token=='J':
     join=stack.pop(-1);op=stack.pop(-1);stack.append(join.join(op))
+  if not string and token=='=':
+    stack.append(stack.pop(-2)==stack.pop(-1))
+  if not string and token=='≠':
+    stack.append(stack.pop(-2)!=stack.pop(-1))
+  if not string and token=='≤':
+    stack.append(stack.pop(-2)<=stack.pop(-1))
+  if not string and token=='{':
+    stack.append(stack.pop(-2)<stack.pop(-1))
+  if not string and token=='}':
+    stack.append(stack.pop(-2)>stack.pop(-1)) 
+  if not string and token=='≥':
+    stack.append(stack.pop(-2)>=stack.pop(-1)) 
+  if not string and token=='≥':
+    stack.append(stack.pop(-2)>=stack.pop(-1))
+  if not string and token=='~':
+    print(stack[-1])
+  if not string and token=='p':
+    print(stack[-1],end='')
+  if not string and token=='P':
+    print(stack[-2],end=stack.pop(-1))
   if direction=='right':X=X+1
   if direction=='left':X=X-1
   if direction=='down':Y=Y+1
