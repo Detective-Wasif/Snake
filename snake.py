@@ -101,6 +101,8 @@ while token!=EOF:
     stack.append(stack.pop(-2)/stack.pop(-1))
   if not string and token=='%':
     stack.append(stack.pop(-2)%stack.pop(-1))
+  if not string and token=='j':
+    join=stack.pop(-1);op=stack.pop(-1);stack.append(join.join(op))
   if direction=='right':X=X+1
   if direction=='left':X=X-1
   if direction=='down':Y=Y+1
