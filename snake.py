@@ -153,7 +153,14 @@ while token!=EOF:
     if not string and token=='u':
       for x in stack.pop(-1):
         stack.append(x)
-    
+    if not string and token=='C':
+      stack.append(chr(stack.pop(-1)))
+    if not string and token=='O':
+      stack.append(ord(stack.pop(-1)))
+    if not string and token=='f':
+      stack.append(open(stack.pop(-1)).read())
+    if not string and token=='√':
+      stack.append(stack.pop(-1)**0.5)
   if direction=='right':X=X+1
   if direction=='left':X=X-1
   if direction=='down':Y=Y+1
