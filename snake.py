@@ -12,8 +12,15 @@ from fractions import*
 #'''[1:-1]   
 
 s='''
-65 97 89.34`str1337`10e4`ski`V
-                 "_∴"$`A`:899<
+1 01 65 97 89.34`str1337`10e4`ski`V
+                                  0
+                                  1
+                                  
+                                  6
+                                  7
+                                  8
+                                  9
+             uw~1β=1 1X_∴X$`A`:899<
 '''[1:-1]
 
 s="\n".join(y+' ' for y in s.split("\n"))
@@ -32,7 +39,8 @@ List=False
 number=False
 cat=True
 register=0
-stack=[0]
+skip=0
+stack=['0']
 variables=dict()
 X=1
 Y=1
@@ -44,88 +52,108 @@ def snipe(dir,x,y,b):
   if dir=='up':return b[x][y-1]
 while token!=EOF:
   token=box[X][Y]
-  if token=='`':
-    string=not(string)
-    if string and not stack[-1] is str:
-      stack.append('')
-  if string and token!='`':
-    stack[-1]+=token
-  if not string and token in '0123456789.e':
-    if cat:
-      stack[-1]=str(stack[-1])+token
-      if not snipe(direction,X,Y,box) in '0123456789.e':
-        cat=False
-        if not frac:
-          if not '.' in stack[-1] and not 'e' in stack[-1]:
-            stack[-1]=int(stack[-1])
+  if skip in [1,2]:
+    skip+=1
+  if skip==3:
+    skip=0
+    execute=True
+  if execute:
+    if token=='`':
+      string=not(string)
+      if string and not stack[-1] is str:
+        stack.append('')
+    if string and token!='`':
+      stack[-1]+=token
+    if (not string) and (token in '0123456789.e'):
+      if cat:
+        stack[-1]=stack[-1]+token
+        if not snipe(direction,X,Y,box) in '0123456789.e':
+          cat=False
+          if not frac:
+            if (not '.' in stack[-1]) and (not 'e' in stack[-1]):
+              stack[-1]=int(stack[-1])
+            else:
+              stack[-1]=float(stack[-1])
           else:
-            stack[-1]=float(stack[-1])
-        else:
-          stack[-1]=Fraction(stack[-1])
-    else:
-      stack.append(token)
-      cat=True
-  if not string and token=='x':
-    break
-  if not string and token in '<>V^':
-    direction=['left','right','down','up']['<>V^'.index(token)]
-  if not string and token==':':
-    stack.append(stack[-1])
-  if not string and token=='$':
-    stack[-2],stack[-1]=stack[-1],stack[-2]
-  if not string and token=='"':
-    stack.append([stack.pop(-2),stack.pop(-1)])
-  if not string and token=='_':
-    del stack[-1]
-  if not string and token=='∴':
-    stack.extend([stack[-1]]*2)
-  if not string and token=='R':
-    stack.append(stack[-1][::-1])
-  if not string and token=='A':
-    stack[-2].append(stack.pop(-1))
-  if not string and token=='^':
-    stack=stack[::-1]
-  if not string and token=='›':
-    stack[-1]+=1
-  if not string and token=='‹':
-    stack[-1]-=1
-  if not string and token=='+':
-    stack.append(stack.pop(-2)+stack.pop(-1))
-  if not string and token=='-':
-    if [type(stack[-1]),type(stack[-2])]==[str,str]:
-      stack.append(stack.pop(-2).replace(stack.pop(-1),''))
-    else:
-      stack.append(stack.pop(-2)-stack.pop(-1))
-  if not string and token=='':
-    stack.append(stack.pop(-2)*stack.pop(-1))
-  if not string and token=='×':
-    stack.append(stack.pop(-2)*stack.pop(-1))
-  if not string and token=='÷':
-    stack.append(stack.pop(-2)/stack.pop(-1))
-  if not string and token=='%':
-    stack.append(stack.pop(-2)%stack.pop(-1))
-  if not string and token=='J':
-    join=stack.pop(-1);op=stack.pop(-1);stack.append(join.join(op))
-  if not string and token=='=':
-    stack.append(stack.pop(-2)==stack.pop(-1))
-  if not string and token=='≠':
-    stack.append(stack.pop(-2)!=stack.pop(-1))
-  if not string and token=='≤':
-    stack.append(stack.pop(-2)<=stack.pop(-1))
-  if not string and token=='{':
-    stack.append(stack.pop(-2)<stack.pop(-1))
-  if not string and token=='}':
-    stack.append(stack.pop(-2)>stack.pop(-1)) 
-  if not string and token=='≥':
-    stack.append(stack.pop(-2)>=stack.pop(-1)) 
-  if not string and token=='≥':
-    stack.append(stack.pop(-2)>=stack.pop(-1))
-  if not string and token=='~':
-    print(stack[-1])
-  if not string and token=='p':
-    print(stack[-1],end='')
-  if not string and token=='P':
-    print(stack[-2],end=stack.pop(-1))
+            stack[-1]=Fraction(stack[-1])
+      else:
+        stack.append(token)
+        cat=True
+    if not string and token=='x':
+      break
+    if not string and token in '<>V^':
+      direction=['left','right','down','up']['<>V^'.index(token)]
+    if not string and token==':':
+      stack.append(stack[-1])
+    if not string and token=='$':
+      stack[-2],stack[-1]=stack[-1],stack[-2]
+    if not string and token=='X':
+      stack.append([stack.pop(-2),stack.pop(-1)])
+    if not string and token=='_':
+      del stack[-1]
+    if not string and token=='∴':
+      stack.extend([stack[-1]]*2)
+    if not string and token=='R':
+      stack.append(stack[-1][::-1])
+    if not string and token=='A':
+      stack[-2].append(stack.pop(-1))
+    if not string and token=='r':
+      stack=stack[::-1]
+    if not string and token=='›':
+      stack[-1]+=1
+    if not string and token=='‹':
+      stack[-1]-=1
+    if not string and token=='+':
+      stack.append(stack.pop(-2)+stack.pop(-1))
+    if not string and token=='-':
+      if [type(stack[-1]),type(stack[-2])]==[str,str]:
+        stack.append(stack.pop(-2).replace(stack.pop(-1),''))
+      else:
+        stack.append(stack.pop(-2)-stack.pop(-1))
+    if not string and token=='×':
+      stack.append(stack.pop(-2)*stack.pop(-1))
+    if not string and token=='÷':
+      stack.append(stack.pop(-2)/stack.pop(-1))
+    if not string and token=='%':
+      stack.append(stack.pop(-2)%stack.pop(-1))
+    if not string and token=='J':
+      join=stack.pop(-1)
+      op=stack.pop(-1)
+      stack.append(join.join(op))
+    if not string and token=='=':
+      stack.append(stack.pop(-2)==stack.pop(-1))
+    if not string and token=='≠':
+      stack.append(stack.pop(-2)!=stack.pop(-1))
+    if not string and token=='≤':
+      stack.append(stack.pop(-2)<=stack.pop(-1))
+    if not string and token=='{':
+      stack.append(stack.pop(-2)<stack.pop(-1))
+    if not string and token=='}':
+      stack.append(stack.pop(-2)>stack.pop(-1)) 
+    if not string and token=='≥':
+      stack.append(stack.pop(-2)>=stack.pop(-1))
+    if not string and token=='~':
+      print(stack[-1])
+    if not string and token=='p':
+      print(stack[-1],end='')
+    if not string and token=='P':
+      print(stack[-2],end=stack.pop(-1))
+    if not string and token=='!':
+      raise Exception("Frick")
+    if not string and token=='β':
+      if stack[-1]:
+        execute=True
+      else:
+        execute=False
+      skip+=1
+      if (type(stack[-1])==bool) and (stack[-1] in [True,False]):
+        del stack[-1]
+    if not string and token=='w':
+      stack=[stack]
+    if not string and token=='u':
+      for x in stack.pop(-1):
+        stack.append(x)
+    
   if direction=='right':X=X+1
   if direction=='left':X=X-1
   if direction=='down':Y=Y+1
