@@ -12,15 +12,8 @@ from fractions import*
 #'''[1:-1]   
 
 s='''
-1 01 65 97 89.34`str1337`10e4`ski`V
-                                  0
-                                  1
-                                  
-                                  6
-                                  7
-                                  8
-                                  9
-    W30◊30 72uw~1β=1 1X_∴X$`A`:899<
+  1 01 65 97 89.34`str1337`10e4`ski`V
+Si`31`W30◊30 72uw~1β=1 1X_∴X$`A`:899<
 '''[1:-1]
 
 s="\n".join(y+' ' for y in s.split("\n"))
@@ -191,6 +184,12 @@ while token!=EOF:
       for _ in range(int(arity)):
         wrap.append(stack.pop(-1))
       stack.append(wrap[::-1])
+    if not string and token=='i':
+      stack.append(int(stack.pop(-1)))
+    if not string and token=='s':
+      stack.append(str(stack.pop(-1)))
+    if not string and token=='S':
+      stack.append([stack.pop(-1)])
   if direction=='right':X=X+1
   if direction=='left':X=X-1
   if direction=='down':Y=Y+1
