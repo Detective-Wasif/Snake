@@ -20,11 +20,11 @@ s='''
                                   7
                                   8
                                   9
-             uw~1β=1 1X_∴X$`A`:899<
+       ◊30 72uw~1β=1 1X_∴X$`A`:899<
 '''[1:-1]
 
 s="\n".join(y+' ' for y in s.split("\n"))
-frac=False
+frac=True
 EOF='E'
 box=[[EOF]+[*l]+[EOF]for l in s.split("\n")]
 wall=[[EOF]*len(s.split("\n")[0])]
@@ -50,6 +50,10 @@ def snipe(dir,x,y,b):
   if dir=='left':return b[x-1][y]
   if dir=='down':return b[x][y+1]
   if dir=='up':return b[x][y-1]
+class fraction(Fraction):
+  pass
+  def __repr__(self):
+    return str(self.numerator)+'/'+str(self.denominator)
 while token!=EOF:
   token=box[X][Y]
   if skip in [1,2]:
@@ -75,7 +79,7 @@ while token!=EOF:
             else:
               stack[-1]=float(stack[-1])
           else:
-            stack[-1]=Fraction(stack[-1])
+            stack[-1]=fraction(stack[-1])
       else:
         stack.append(token)
         cat=True
@@ -103,19 +107,19 @@ while token!=EOF:
       stack[-1]+=1
     if not string and token=='‹':
       stack[-1]-=1
-    if not string and token=='+':
-      stack.append(stack.pop(-2)+stack.pop(-1))
+    if not string and token in '+×÷%':
+      exec('res=stack.pop(-2)'+token+'stack.pop(-1)')
+      if frac:
+        res=fraction(res)
+      stack.append(res)
     if not string and token=='-':
       if [type(stack[-1]),type(stack[-2])]==[str,str]:
         stack.append(stack.pop(-2).replace(stack.pop(-1),''))
       else:
-        stack.append(stack.pop(-2)-stack.pop(-1))
-    if not string and token=='×':
-      stack.append(stack.pop(-2)*stack.pop(-1))
-    if not string and token=='÷':
-      stack.append(stack.pop(-2)/stack.pop(-1))
-    if not string and token=='%':
-      stack.append(stack.pop(-2)%stack.pop(-1))
+        res=stack.pop(-2)-stack.pop(-1)
+        if frac:
+          res=fraction(res)
+        stack.append(res)
     if not string and token=='J':
       join=stack.pop(-1)
       op=stack.pop(-1)
@@ -160,7 +164,27 @@ while token!=EOF:
     if not string and token=='f':
       stack.append(open(stack.pop(-1)).read())
     if not string and token=='√':
-      stack.append(stack.pop(-1)**0.5)
+      res=stack.pop(-1)**0.5
+      if frac:
+        res=fraction(res)
+      stack.append(res)
+    if not string and token=='◊':
+      root=stack.pop(-1)
+      op=stack.pop(-1)
+      res=op**(1/root)
+      if frac:
+        res=fraction(res)
+      stack.append(res)
+    if not string and token=='m':
+      coord=stack.pop(-1)
+      X,Y=coord[0],coord[1]
+    if not string and token=='*':
+      exp=stack.pop(-1)
+      base=stack.pop(-1)
+      res=base**exp
+      if frac:
+        res=fraction(res)
+      stack.append(res)
   if direction=='right':X=X+1
   if direction=='left':X=X-1
   if direction=='down':Y=Y+1
