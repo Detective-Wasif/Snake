@@ -20,11 +20,11 @@ s='''
                                   7
                                   8
                                   9
-       ◊30 72uw~1β=1 1X_∴X$`A`:899<
+    W30◊30 72uw~1β=1 1X_∴X$`A`:899<
 '''[1:-1]
 
 s="\n".join(y+' ' for y in s.split("\n"))
-frac=True
+frac=False
 EOF='E'
 box=[[EOF]+[*l]+[EOF]for l in s.split("\n")]
 wall=[[EOF]*len(s.split("\n")[0])]
@@ -185,6 +185,12 @@ while token!=EOF:
       if frac:
         res=fraction(res)
       stack.append(res)
+    if not string and token=='W':
+      wrap=[]
+      arity=stack.pop(-1)
+      for _ in range(int(arity)):
+        wrap.append(stack.pop(-1))
+      stack.append(wrap[::-1])
   if direction=='right':X=X+1
   if direction=='left':X=X-1
   if direction=='down':Y=Y+1
